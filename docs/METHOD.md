@@ -21,8 +21,7 @@ log mu_ij = log(library_i) + eta_ij            X_ij ~ NB(mu_ij, theta_j)
 Each factor map is an MLP (`d -> 256 -> genes`), not a linear map. The terms are summed at the gene level, so each factor's
 contribution to every gene stays readable.
 
-This is built on scDisInFact: the encoders, the classifier on `z_d`, the per-condition prior, the MMD terms, the KL terms and the group
-lasso are inherited. Only the decoder changes (scDisInFact's joint MLP becomes the additive NB decoder above).
+SILVA is built on the scDisInFact skeleton; the additive NB decoder above is the new component.
 
 ### detach z_c in H (the final version)
 

@@ -9,16 +9,20 @@ eta = gene_bias + F(z_c) + H(z_c, z_d) + B(donor)          log mu = log(library)
 ```
 
 `H` is the per-gene condition attribution; decoding with `z_d` swapped (and the donor term dropped) gives a counterfactual. SILVA is built on
-the [scDisInFact](https://github.com/ZhangLabGT/scDisInFact) skeleton (same encoders, classifier, priors, MMD/KL losses, alternating updates); only
-the decoder differs. The released version is **v3 + detach z_c in H**: `H` reads `z_c`, but its gradient does not reach the `z_c` encoder
-([docs/METHOD.md](docs/METHOD.md)).
+the scDisInFact skeleton.
+
+**What SILVA adds**
+- an additive NB decoder with MLP factor maps, so the shared, condition and donor contributions are separate per-gene terms;
+- `detach z_c in H`: `H` reads `z_c`, but its gradient does not reach the `z_c` encoder ([docs/METHOD.md](docs/METHOD.md));
+- reference-anchored per-gene attribution and counterfactual decoding;
+- the benchmarks and the simulation with known per-gene variance shares.
 
 ## Install
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install torch                       # pick the build matching your CUDA
-pip install -e .                        # installs SILVA and the pinned scDisInFact (GPL-3.0, see NOTICE.md)
+pip install -e .                        # installs SILVA and its pinned dependency (see NOTICE.md)
 pip install -e ".[benchmarks]"          # only for the benchmark scripts (scanpy, scib-metrics, scvi-tools, harmonypy)
 python -m unittest discover -s tests    # 16 tests, CPU, a few seconds
 ```
@@ -86,5 +90,4 @@ configs/ docs/ tests/
 
 ## License and citation
 
-License: **to be chosen**. SILVA imports and subclasses scDisInFact (GPL-3.0); see [NOTICE.md](NOTICE.md). Please cite scDisInFact (Zhang et al.,
-bioRxiv 2023, doi:10.1101/2023.05.01.538975) and this work.
+License: **to be chosen** (see [NOTICE.md](NOTICE.md)).

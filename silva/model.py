@@ -1,17 +1,12 @@
 """SILVA: additive negative-binomial decoder on the scDisInFact skeleton.
 
-SILVA keeps scDisInFact's shared / specific encoders, the classifier on z_d, the per-condition Gaussian
-prior, MMD, KL, group lasso and the alternating two-step update. The only structural change is the
-decoder: the joint MLP is replaced by an additive NB decoder so every factor's contribution is a
-per-gene quantity.
-
     eta_ij  = gene_bias_j + F(z_c)_ij + H(z_c, z_d)_ij + B(donor_i)_j      # each term [cells x genes]
     log mu_ij = log(library_i) + eta_ij
     X_ij ~ NB(mu_ij, theta_j)
 
-F is the shared (cell-state) term, H the condition term (cell-state specific through z_c), B the donor
-term. Final configuration ("v3 + detach"): H still reads z_c, but its gradient does not flow into z_c
-(`detach_zc_in_H=True`), so the encoder of z_c is shaped by F, KL and MMD only.
+F is the shared (cell-state) term, H the condition term (cell-state specific through z_c), B the donor term, so every
+factor's contribution to every gene is readable. Final configuration ("v3 + detach"): H still reads z_c, but its gradient does
+not flow into z_c (`detach_zc_in_H=True`), so the z_c encoder is shaped by F, KL and MMD only.
 """
 from __future__ import annotations
 

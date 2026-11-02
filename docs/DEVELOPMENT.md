@@ -7,7 +7,7 @@ All numbers are from this repository's experiments (Kang PBMC, three model seeds
 
 | version | change | result |
 |---|---|---|
-| v3 | additive NB decoder on the scDisInFact skeleton, MLP factor maps, alternating training | PBMC Total .674 |
+| v3 | additive NB decoder, MLP factor maps, alternating training | PBMC Total .674 |
 | **v3 + detach** | v3 + `z_c.detach()` inside `H` | PBMC Total .691 +- .009 (Batch .717, Bio .674); no instability in the 3 simulations and 3 PBMC seeds we ran |
 
 ## Single-factor changes on top of the final version (3 seeds)
