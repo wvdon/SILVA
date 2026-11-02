@@ -89,6 +89,8 @@ configs/ docs/ tests/
 
 ## License and citation
 
-License: to be added.
+License: GNU General Public License v3.0 ([LICENSE](LICENSE)).
 
 SILVA is built on the [scDisInFact](https://github.com/ZhangLabGT/scDisInFact) skeleton; the skeleton modules are included in `silva/_skeleton/` with their original license.
+Please cite: Zhang Z, Zhao X, Bindra M, Qiu P, Zhang X. scDisInFact: disentangled learning for integration and prediction of multi-batch multi-condition
+single-cell RNA-sequencing data. *Nature Communications* 15, 912 (2024). https://doi.org/10.1038/s41467-024-45227-w
