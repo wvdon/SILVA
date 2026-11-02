@@ -44,39 +44,6 @@ python scripts/train.py --adata data/kang.h5ad --donor-key batch --condition-key
 Defaults ([configs/default.yaml](configs/default.yaml)): `z_c` 32, `z_d` 2, factor-map width 256, NB, all genes (no HVG selection), 10% of every
 donor x condition stratum held out for early stopping. Per-gene attribution and counterfactual decoding: [docs/METHOD.md](docs/METHOD.md).
 
-## Benchmarks
-
-Reproduce with the scripts in [benchmarks/](benchmarks/). Protocols, caveats and the negative results are in
-[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
-
-**PBMC (Kang 2018 IFN-beta, GSE96583; 24,562 cells, 15,701 genes, 8 donors x ctrl/stim = 16 samples).** scIB-metrics, `batch = donor`,
-`label = cell type`, Total = 0.4 Batch + 0.6 Bio, shared latent 32-d (scDisInFact official: 8-d). SILVA rows: mean +- sd over 3 model seeds; other rows: one run.
-
-| method | Batch | Bio | Total |
-|---|---|---|---|
-| Unintegrated (PCA32) | .525 | .663 | .608 |
-| Harmony (donor) | .701 | .704 | .703 |
-| CellANOVA | .654 | .678 | .669 |
-| scVI (all genes, defaults, latent 32) | .649 | .639 | .643 |
-| scDisInFact, same split/early stopping as SILVA (32 + 2) | .672 | .701 | .690 |
-| scDisInFact, official demo settings (8 + 2, 100 epochs, 3 seeds) | .569 | .590 | .582 +- .012 |
-| SILVA v3 | .676 | .673 | .674 |
-| **SILVA v3 + detach** | .717 | .674 | **.691 +- .009** |
-| SILVA v3 + detach + post-hoc Harmony on `z_c` | .776 | .679 | .717 +- .010 |
-
-The scVI row used all genes rather than the HVG selection of the scVI tutorial. Post-hoc Harmony is a separate, optional step, not part of SILVA.
-Kang's control and stimulated cells were loaded as separate pools, so lane differences cannot be separated from the IFN response.
-
-**Simulation (Splatter, known per-gene variance shares; 3 simulations).** Mean squared error and Pearson r between each model's per-gene share of
-shared / condition / batch variance and the truth.
-
-| | MSE shared | MSE cond | MSE batch | r shared | r cond | r batch |
-|---|---|---|---|---|---|---|
-| scDisInFact (same trainer) | .124 | .0159 | .068 | .706 | .923 | **.877** |
-| **SILVA v3 + detach** | **.051** | **.0071** | **.0285** | **.796** | **.960** | .839 |
-
-SILVA has lower error on all three shares; scDisInFact's batch share correlates better with the truth (r .877 vs .839).
-
 ## Layout
 
 ```
@@ -87,10 +54,6 @@ benchmarks/simulation/  sim_v1_splatter.R, make_sim_run.py, eval_sim.py
 configs/ docs/ tests/
 ```
 
-## License and citation
+## License
 
-License: GNU General Public License v3.0 ([LICENSE](LICENSE)).
-
-SILVA is built on the [scDisInFact](https://github.com/ZhangLabGT/scDisInFact) skeleton; the skeleton modules are included in `silva/_skeleton/` with their original license.
-Please cite: Zhang Z, Zhao X, Bindra M, Qiu P, Zhang X. scDisInFact: disentangled learning for integration and prediction of multi-batch multi-condition
-single-cell RNA-sequencing data. *Nature Communications* 15, 912 (2024). https://doi.org/10.1038/s41467-024-45227-w
+GNU General Public License v3.0 ([LICENSE](LICENSE)).
