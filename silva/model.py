@@ -16,8 +16,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as opt
 
-from scDisInFact.model import scdisinfact
-import scDisInFact.loss_function as loss_func
+from ._skeleton.model import scdisinfact
+from ._skeleton import loss_function as loss_func
 
 
 def nb_log_prob(counts: torch.Tensor, log_mu: torch.Tensor,

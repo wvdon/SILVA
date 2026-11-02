@@ -21,7 +21,7 @@ eta = gene_bias + F(z_c) + H(z_c, z_d) + B(donor)          log mu = log(library)
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install torch                       # pick the build matching your CUDA
-pip install -e .                        # installs SILVA and its dependencies
+pip install git+https://github.com/wvdon/SILVA.git     # or, from a clone: pip install -e .
 pip install -e ".[benchmarks]"          # only for the benchmark scripts (scanpy, scib-metrics, scvi-tools, harmonypy)
 python -m unittest discover -s tests    # 16 tests, CPU, a few seconds
 ```
@@ -91,4 +91,4 @@ configs/ docs/ tests/
 
 License: to be added.
 
-SILVA is built on the [scDisInFact](https://github.com/ZhangLabGT/scDisInFact) skeleton.
+SILVA is built on the [scDisInFact](https://github.com/ZhangLabGT/scDisInFact) skeleton; the skeleton modules are included in `silva/_skeleton/` with their original license.

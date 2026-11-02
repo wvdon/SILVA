@@ -36,7 +36,7 @@ def silva_terms(folder, a, cond, donor):
 
 
 def scdisinfact_terms(folder, a, cond, donor, n_batches=8):
-    from scDisInFact import base_model
+    from silva._skeleton import base_model
     state = torch.load(folder / "model.pt", map_location="cpu", weights_only=True)
     dec = base_model.Decoder(n_input=state["Dec.fc.fc_layers.Layer 0.0.weight"].shape[1] - n_batches, n_output=a.n_vars, n_cat_list=[n_batches],
                              n_layers=2, n_hidden=128, dropout_rate=0.2, use_batch_norm=False)

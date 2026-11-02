@@ -6,7 +6,9 @@ Embedding = mu_c of dict_inf from model.inference (as in the demo). Usage: pytho
 Output: <out>/emb.npz (z_c, z_d, cell_ids, genes), config.json"""
 import argparse, json, time, numpy as np, anndata as ad, scipy.sparse as sp, torch
 from pathlib import Path
-from scDisInFact import scdisinfact, create_scdisinfact_dataset
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from silva._skeleton.model import scdisinfact, create_scdisinfact_dataset
 p = argparse.ArgumentParser(); p.add_argument("--adata", type=Path, required=True); p.add_argument("--out", type=Path, required=True)
 p.add_argument("--donor-key", default="batch"); p.add_argument("--condition-key", default="condition"); p.add_argument("--seed", type=int, default=0)
 args = p.parse_args(); seed, out = args.seed, args.out; out.mkdir(parents=True, exist_ok=True)

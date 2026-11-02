@@ -13,4 +13,3 @@ harmonypy
 scikit-misc
 leidenalg
 igraph
-scDisInFact @ git+https://github.com/ZhangLabGT/scDisInFact.git@9466ecf257d923f879cb39712c530d24826d88bc

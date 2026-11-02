@@ -5,10 +5,8 @@ import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 import torch
-from scDisInFact import create_scdisinfact_dataset
 
-from scDisInFact import scdisinfact
-
+from ._skeleton.model import create_scdisinfact_dataset, scdisinfact
 from .model import SILVA
 from .trainer import embed, make_split, train
 
