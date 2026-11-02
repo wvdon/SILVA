@@ -8,8 +8,7 @@ decoder** so that every factor's contribution is a readable per-gene quantity:
 eta = gene_bias + F(z_c) + H(z_c, z_d) + B(donor)          log mu = log(library) + eta          X ~ NB(mu, theta_gene)
 ```
 
-`H` is the per-gene condition attribution; decoding with `z_d` swapped (and the donor term dropped) gives a counterfactual. SILVA is built on
-the scDisInFact skeleton.
+`H` is the per-gene condition attribution; decoding with `z_d` swapped (and the donor term dropped) gives a counterfactual.
 
 **What SILVA adds**
 - an additive NB decoder with MLP factor maps, so the shared, condition and donor contributions are separate per-gene terms;
@@ -22,7 +21,7 @@ the scDisInFact skeleton.
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install torch                       # pick the build matching your CUDA
-pip install -e .                        # installs SILVA and its pinned dependency (see NOTICE.md)
+pip install -e .                        # installs SILVA and its dependencies
 pip install -e ".[benchmarks]"          # only for the benchmark scripts (scanpy, scib-metrics, scvi-tools, harmonypy)
 python -m unittest discover -s tests    # 16 tests, CPU, a few seconds
 ```
@@ -90,4 +89,6 @@ configs/ docs/ tests/
 
 ## License and citation
 
-License: **to be chosen** (see [NOTICE.md](NOTICE.md)).
+License: to be added.
+
+SILVA is built on the [scDisInFact](https://github.com/ZhangLabGT/scDisInFact) skeleton.

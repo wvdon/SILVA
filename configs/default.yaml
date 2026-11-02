@@ -7,7 +7,7 @@ model:
   detach_zc_in_H: true    # H reads z_c but its gradient does not reach the z_c encoder
   param: logmu            # log mu = log(library) + eta (additive, no softmax)
   likelihood: NB          # gene-wise dispersion
-loss_weights:             # scDisInFact defaults except where noted
+loss_weights:
   reg_kl_comm: 1.0e-5     # KL(q(z_c|x) || N(0, I)) ; 1e-4 .. 1e-2 were tested, see docs/DEVELOPMENT.md
   reg_kl_diff: 1.0e-2     # KL of z_d to a learned per-condition Gaussian prior
   reg_mmd_comm: 1.0e-4

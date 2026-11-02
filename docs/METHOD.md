@@ -21,8 +21,6 @@ log mu_ij = log(library_i) + eta_ij            X_ij ~ NB(mu_ij, theta_j)
 Each factor map is an MLP (`d -> 256 -> genes`), not a linear map. The terms are summed at the gene level, so each factor's
 contribution to every gene stays readable.
 
-SILVA is built on the scDisInFact skeleton; the additive NB decoder above is the new component.
-
 ### detach z_c in H (the final version)
 
 `H` still receives `z_c` as an input (the forward pass is identical), but `z_c.detach()` is used, so the gradient of the reconstruction loss

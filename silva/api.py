@@ -40,7 +40,7 @@ def fit(adata, donor_key: str = "donor_id", condition_key: str = "condition", co
     if method == "silva":
         model = SILVA(**kw, dec_param="logmu", dec_hidden=dec_hidden, dec_interaction=True, reg_sparse=1e-3,
                           dec_detach_zc_in_H=detach_zc_in_H)
-    elif method == "scdisinfact":   # baseline trained with the same loop/split (see docs/BENCHMARKS.md)
+    elif method == "scdisinfact":   # baseline trained with the same loop and split
         model = scdisinfact(**kw)
     else:
         raise ValueError("method must be 'silva' or 'scdisinfact'")

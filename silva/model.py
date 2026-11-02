@@ -1,4 +1,4 @@
-"""SILVA: additive negative-binomial decoder on the scDisInFact skeleton.
+"""SILVA: additive negative-binomial decoder.
 
     eta_ij  = gene_bias_j + F(z_c)_ij + H(z_c, z_d)_ij + B(donor_i)_j      # each term [cells x genes]
     log mu_ij = log(library_i) + eta_ij
@@ -54,10 +54,10 @@ class AdditiveDecoder(nn.Module):
         self.d_common = d_common
         # param: "softmax" -> log_mu = log(lib) + log_softmax(eta) (compositional, E3);
         #        "logmu"   -> log_mu = log(lib) + (bias + Σ terms) (independent per-gene,
-        #                     closer to scDisInFact; still additive -> attribution holds).
+        #                     still additive -> attribution holds).
         # gauge_fix: per-cell gene-mean center each term (E1; only meaningful for softmax).
         # hidden: 0 -> each factor map is Linear(d->G); >0 -> MLP(d->hidden->G) to match
-        #         scDisInFact decoder capacity (still additive at the GENE level).
+        #         a joint-decoder capacity (still additive at the GENE level).
         assert param in ("softmax", "logmu")
         self.param = param
         self.gauge_fix = gauge_fix
@@ -106,7 +106,7 @@ class AdditiveDecoder(nn.Module):
 
 
 class JointDecoder(nn.Module):
-    """Control decoder with the scDisInFact-style *joint* structure (no additive per-factor terms).
+    """Control decoder with a *joint* structure (no additive per-factor terms), used for the additive-vs-joint ablation.
 
     log_mu = log(library) + MLP([z_c, z_d, donor one-hot]); same NB likelihood, per-gene theta and
     log-rate offset as AdditiveDecoder, so only the decoder structure differs. There is no per-gene
@@ -147,7 +147,7 @@ class JointDecoder(nn.Module):
 
 
 class SILVA(scdisinfact):
-    """scDisInFact + additive NB decoder. Only __init__/generative/loss differ; inference, the dataset and the
+    """Additive NB decoder model. Only __init__/generative/loss differ; inference, the dataset and the
     encoders are inherited. Train with `silva.trainer.fit` (alternating two-step update, validation early stopping)."""
 
     def __init__(self, *args, dec_param: str = "logmu", dec_gauge_fix: bool = False,
@@ -190,7 +190,7 @@ class SILVA(scdisinfact):
         group-lasso are computed exactly as in scDisInFact (copied)."""
         ce_loss = nn.CrossEntropyLoss(reduction="mean")
 
-        # 1. additive NB reconstruction (replaces scDisInFact's softplus-NB Dec)
+        # 1. additive NB reconstruction
         library = count.sum(dim=1, keepdim=True).clamp_min(1.0)
         log_mu = library.log() + dict_gen["log_term"]
         loss_recon = -nb_log_prob(count, log_mu, self.Dec.log_theta).mean()
