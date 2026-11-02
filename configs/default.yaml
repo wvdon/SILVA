@@ -1,0 +1,25 @@
+# SILVA final configuration ("v3 + detach z_c in H"). These are the defaults of silva.fit / scripts/train.py.
+model:
+  zc_dim: 32              # shared latent z_c (cell state)
+  zd_dim: 2               # specific latent z_d (one condition factor)
+  dec_hidden: 256         # width of each factor map F, H (MLP d -> hidden -> genes)
+  interaction: true       # H takes [z_c, z_d]: cell-state-specific condition effect
+  detach_zc_in_H: true    # H reads z_c but its gradient does not reach the z_c encoder
+  param: logmu            # log mu = log(library) + eta (additive, no softmax)
+  likelihood: NB          # gene-wise dispersion
+loss_weights:             # scDisInFact defaults except where noted
+  reg_kl_comm: 1.0e-5     # KL(q(z_c|x) || N(0, I)) ; 1e-4 .. 1e-2 were tested, see docs/DEVELOPMENT.md
+  reg_kl_diff: 1.0e-2     # KL of z_d to a learned per-condition Gaussian prior
+  reg_mmd_comm: 1.0e-4
+  reg_mmd_diff: 1.0e-4
+  reg_class: 1            # linear classifier on z_d
+  reg_gl: 1               # group lasso on the z_d encoder (+ 1e-3 L1 on H output weights)
+train:
+  optimizer: Adam
+  lr: 5.0e-4
+  batch_size: 64          # cells per donor x condition stratum per step
+  max_epochs: 400
+  val_frac: 0.1           # per donor x condition stratum
+  eval_every: 5           # epochs
+  patience: 8             # evaluations
+  lr_decay: {factor: 0.6, after_evaluations: 3, min_lr: 1.0e-6}

@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "silva"
+version = "1.0.0"
+description = "SILVA: disentangled additive negative-binomial model for single-cell RNA-seq with per-gene factor attribution"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "torch>=2.2",
+  "numpy",
+  "scipy",
+  "pandas",
+  "anndata>=0.10",
+  "scikit-learn",
+  # SILVA subclasses scDisInFact (GPL-3.0); pinned to the commit the results were produced with
+  "scDisInFact @ git+https://github.com/ZhangLabGT/scDisInFact.git@9466ecf257d923f879cb39712c530d24826d88bc",
+]
+
+[project.optional-dependencies]
+benchmarks = ["scanpy>=1.10", "scib-metrics>=0.5", "scvi-tools>=1.1", "harmonypy", "scikit-misc", "leidenalg", "igraph"]
+
+[tool.setuptools.packages.find]
+include = ["silva*"]

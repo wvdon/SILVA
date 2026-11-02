@@ -1,0 +1,16 @@
+# Versions used for the reported results: Python 3.11, torch 2.6.0 (CUDA 12.4), numpy 2.x, anndata 0.12, scanpy 1.11.5,
+# scib-metrics 0.5.9, scvi-tools 1.4.2, scikit-learn 1.6+
+torch>=2.2
+numpy
+scipy
+pandas
+anndata>=0.10
+scikit-learn
+scanpy>=1.10
+scib-metrics>=0.5
+scvi-tools>=1.1
+harmonypy
+scikit-misc
+leidenalg
+igraph
+scDisInFact @ git+https://github.com/ZhangLabGT/scDisInFact.git@9466ecf257d923f879cb39712c530d24826d88bc
