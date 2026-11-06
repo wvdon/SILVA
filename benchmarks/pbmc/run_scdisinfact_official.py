@@ -25,6 +25,7 @@ for ds in data_dict["datasets"]:
         inf = model.inference(counts=ds.counts_norm.to(model.device), batch_ids=ds.batch_id[:, None].to(model.device), print_stat=False)
     zc.append(inf["mu_c"].cpu().numpy()); zd.append(inf["mu_d"][0].cpu().numpy())
 ids = np.concatenate([m.index.to_numpy().astype(str) for m in data_dict["meta_cells"]])
+torch.save(model.state_dict(), out / "model.pt")
 np.savez(out / "emb.npz", z=np.concatenate(zc), z_c=np.concatenate(zc), z_d=np.concatenate(zd), cell_ids=ids, genes=a.var_names.to_numpy().astype(str))
 json.dump(dict(Ks=Ks, nepochs=100, interval=10, lr=5e-4, batch_size=64, seed=seed, lambs=lambs, cells=int(len(ids)), genes=int(a.n_vars),
                protocol="official demo.ipynb defaults; all cells, no validation, no early stopping", seconds=time.time() - t), open(out / "config.json", "w"), indent=1)

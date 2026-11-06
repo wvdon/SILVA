@@ -96,11 +96,15 @@ def train(model, data_dict: dict, split: pd.Series, max_epochs: int = 400, patie
         if epoch % eval_every == 0 or epoch == max_epochs - 1:
             model.eval()
             with torch.no_grad():
-                v = float(np.mean([float(total_loss(model, loss_terms(model, b))) for b in zip(*va)]))
+                vt = [loss_terms(model, b) for b in zip(*va)]
+                v = float(np.mean([float(total_loss(model, t)) for t in vt]))
+                w = model.lambs   # weighted validation terms, to see which one drives the total
+                vterms = dict(zip(["nb", "kl_c", "kl_d", "mmd_c", "mmd_d", "cls", "gl"], [round(float(x), 4) for x in np.mean(
+                    [[float(t[0]), float(w["kl_comm"] * t[1]), float(w["kl_diff"] * t[2]), float(w["mmd_comm"] * t[3]), float(w["mmd_diff"] * t[4]), float(w["class"] * t[5]), float(w["gl"] * t[6])] for t in vt], 0)]))
             if not np.isfinite(v):
                 raise ValueError("non-finite validation loss")
             history.append(dict(epoch=epoch, optimizer_updates=updates, train_nb=float(np.mean(losses)),
-                                val_total=v, lr=model.opt.param_groups[0]["lr"]))
+                                val_total=v, lr=model.opt.param_groups[0]["lr"], val_terms=vterms))
             if verbose:
                 print(json.dumps(history[-1]), flush=True)
             if v < best - 1e-4:
@@ -123,14 +127,17 @@ def train(model, data_dict: dict, split: pd.Series, max_epochs: int = 400, patie
 
 
 @torch.no_grad()
-def embed(model, data_dict: dict, obs_names: pd.Index, chunk: int = 128):
-    """Posterior means (z_c, z_d) for every cell, returned in `obs_names` order."""
+def embed(model, data_dict: dict, obs_names: pd.Index, chunk: int = 128, all_factors: bool = False):
+    """Posterior means (z_c, z_d) for every cell, returned in `obs_names` order.
+    z_d is the array of the first (only) condition factor, or a list with one array per factor when `all_factors` is True."""
     model.eval()
-    zc, zd, ids = [], [], []
+    zc, ids = [], []; zd = [[] for _ in range(model.n_diff_factors)]
     for ds, block in zip(data_dict["datasets"], data_dict["meta_cells"]):
         for lo in range(0, len(ds), chunk):
             sl = slice(lo, lo + chunk)
             di = model.inference(ds.counts_norm[sl].to(model.device), ds.batch_id[sl, None].to(model.device))
-            zc.append(di["mu_c"].cpu().numpy()); zd.append(di["mu_d"][0].cpu().numpy()); ids.extend(block.index[sl])
+            zc.append(di["mu_c"].cpu().numpy()); ids.extend(block.index[sl])
+            for k in range(model.n_diff_factors): zd[k].append(di["mu_d"][k].cpu().numpy())
     order = pd.Index(ids).get_indexer(obs_names)
-    return np.concatenate(zc)[order], np.concatenate(zd)[order]
+    zds = [np.concatenate(z)[order] for z in zd]
+    return np.concatenate(zc)[order], (zds if all_factors else zds[0])
